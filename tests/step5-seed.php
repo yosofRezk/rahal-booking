@@ -27,7 +27,6 @@ $now   = gmdate( 'Y-m-d H:i:s' );
 $future = gmdate( 'Y-m-d H:i:s', time() + HOUR_IN_SECONDS );
 
 $base = array(
-	'reference'             => '',
 	'tour_id'               => (int) $tour_id,
 	'customer_name'         => 'Test User',
 	'customer_email'        => 'test@example.com',
@@ -47,24 +46,28 @@ $base = array(
 
 $rows = array(
 	array(
+		'reference'       => 'TEST-STEP5-1',
 		'tour_date'       => '2026-12-10',
 		'guests'          => 4,
 		'booking_status'  => 'confirmed',
 		'expires_at'      => null,
 	),
 	array(
+		'reference'       => 'TEST-STEP5-2',
 		'tour_date'       => '2026-12-10',
 		'guests'          => 6,
 		'booking_status'  => 'pending',
 		'expires_at'      => $future,
 	),
 	array(
+		'reference'       => 'TEST-STEP5-3',
 		'tour_date'       => '2026-12-10',
 		'guests'          => 3,
 		'booking_status'  => 'cancelled',
 		'expires_at'      => null,
 	),
 	array(
+		'reference'       => 'TEST-STEP5-4',
 		'tour_date'       => '2026-12-20',
 		'guests'          => 5,
 		'booking_status'  => 'confirmed',

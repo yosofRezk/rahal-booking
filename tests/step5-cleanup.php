@@ -16,10 +16,7 @@ global $wpdb;
 $table = rahl_table_name();
 
 $deleted = $wpdb->query(
-	$wpdb->prepare(
-		"DELETE FROM {$table} WHERE customer_email = %s",
-		'test@example.com'
-	)
+	"DELETE FROM {$table} WHERE customer_email = 'test@example.com' OR reference LIKE 'TEST-STEP5-%'"
 );
 
 if ( false === $deleted ) {
