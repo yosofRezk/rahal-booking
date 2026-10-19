@@ -52,6 +52,11 @@ class RAHL_Plugin {
         // تحميل الكلاسات الأساسية المشتركة (Admin + Frontend)
         require_once RAHL_PATH . 'includes/class-settings.php';
         require_once RAHL_PATH . 'includes/class-tour.php';
+        require_once RAHL_PATH . 'includes/class-booking-repository.php';
+        require_once RAHL_PATH . 'includes/class-availability.php';
+        require_once RAHL_PATH . 'frontend/class-shortcodes.php';
+
+        add_action( 'init', array( 'RAHL_Shortcodes', 'init' ) );
 
         // تحميل مكونات الأدمن
         if ( is_admin() ) {

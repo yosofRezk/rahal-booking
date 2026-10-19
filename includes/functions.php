@@ -33,8 +33,7 @@ function rahl_table_name() {
  * @return int إجمالي المقاعد.
  */
 function rahl_get_total_seats( $tour_id ) {
-    // Step 4 + 5: return RAHL_Availability::get_total( $tour_id );
-    return 0;
+    return RAHL_Availability::get_total( $tour_id );
 }
 
 /**
@@ -45,8 +44,7 @@ function rahl_get_total_seats( $tour_id ) {
  * @return int المقاعد المحجوزة.
  */
 function rahl_get_booked_seats( $tour_id, $date = null ) {
-    // Step 5: return RAHL_Availability::get_booked( $tour_id, $date );
-    return 0;
+    return RAHL_Availability::get_booked( $tour_id, $date );
 }
 
 /**
@@ -57,8 +55,7 @@ function rahl_get_booked_seats( $tour_id, $date = null ) {
  * @return int المقاعد المتاحة (لا تقل عن 0).
  */
 function rahl_get_available_seats( $tour_id, $date = null ) {
-    // Step 5: return RAHL_Availability::get_available( $tour_id, $date );
-    return 0;
+    return RAHL_Availability::get_available( $tour_id, $date );
 }
 
 // ─── دوال الحجز (تتملي في Step 7) ───────────────────────────────────────────
@@ -70,8 +67,7 @@ function rahl_get_available_seats( $tour_id, $date = null ) {
  * @return object|null بيانات الحجز أو null.
  */
 function rahl_get_booking( $booking_id ) {
-    // Step 5 + 7: return RAHL_Booking_Repository::get( $booking_id );
-    return null;
+    return RAHL_Booking_Repository::get( $booking_id );
 }
 
 /**
