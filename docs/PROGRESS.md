@@ -18,7 +18,7 @@
 
 ## Current step
 
-**Step 5 — Repository + Availability + seat shortcodes** — في انتظار اختبارك.
+**Step 6 — Pricing** — جاهز للتنفيذ (Step 5 اختُبر بنجاح 20 أكتوبر 2026).
 
 ## Decisions / deviations from SPEC
 
@@ -42,3 +42,4 @@
 - استعلام المحجوز: `confirmed` **أو** `pending` مع `expires_at > UTC_TIMESTAMP()` (المقاعد ترجع فور انتهاء المهلة من غير Cron).
 - `tour_date IS NULL` و` tour_date = %s` استعلامان منفصلان (prepare + NULL).
 - بدون Transient cache في v0.1 (حسب PLAN).
+- **اختبار مقبول:** seed 4 صفوف → 10/15 → expire pending → 16/15 → cleanup (Local `rahl-dev`, tour_id=9).
