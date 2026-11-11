@@ -1,77 +1,159 @@
-# 🌍 Rahal Booking System (نظام رحال لإدارة حجوزات السفر والرحلات)
+# Rahal Booking System
 
-> **إضافة ووردبريس مستقلة وخفيفة لإدارة حجوزات الرحلات السياحية (Standalone Booking Engine) — بدون Composer، بدون مكتبات خارجية، وبدون أي اعتماد على ACF أو WooCommerce.**
+A lightweight, standalone WordPress booking engine designed for travel agencies, tour operators, and activity providers.
 
----
-
-## 📌 نبذة عن البلاجن (Overview)
-**Rahal Booking** هي إضافة ووردبريس تم بناؤها من الصفر لتكون محرك حجز فائق السرعة والأمان. صُممت خصيصاً لشركات السياحة ومنظمي الرحلات لربط إمكانية الحجز بأي نوع مقالات مخصص (Custom Post Type) موجود بالفعل على الموقع دون الحاجة لإعادة هيكلة المحتوى أو نقل البيانات القديمة.
+Rahal Booking allows you to attach a full-featured booking workflow to any existing Custom Post Type (CPT) without restructuring your site content, relying on WooCommerce, or requiring commercial plugins like Advanced Custom Fields (ACF).
 
 ---
 
-## ✨ المميزات الرئيسية (Key Features)
+## 1. Architectural Philosophy and Features
 
-1. **الربط بأي نوع رحلات (Post Type Agnostic):**
-   - تعمل مع أي CPT تختاره من لوحة التحكم (Tours, Trips, Packages... إلخ).
-   - تقرأ عدد المقاعد، السعر، وتاريخ الرحلة من أي Custom Meta Fields مستخدمة في موقعك.
-
-2. **منع الحجز المزدوج الزائد (Zero Overbooking Guarantee):**
-   - تعتمد على نظام الأقفال الحصرية في قاعدة البيانات عبر `MySQL GET_LOCK` لمنع تجاوز المقاعد حتى لو حاول مئات الزوار حجز نفس المقعد في نفس الملي ثانية.
-
-3. **أمان وحماية متعددة الطبقات (Enterprise-grade Security):**
-   - **Honeypot Trap:** صيد واستبعاد روبوتات السبام بصمت دون الحاجة لتعطيل المستخدمين بكابتشا معقدة.
-   - **Rate Limiting:** حظر الهجمات ومحاولات الإغراق (حد أقصى 5 محاولات في الساعة لكل IP).
-   - **Double-click Prevention:** منع تكرار الحجز عند النقر المزدوج على زر الإرسال.
-   - **Server-side Pricing:** احتساب جميع الأسعار والمبالغ على السيرفر حصراً ورفض أي تلاعب من جهة المتصفح.
-
-4. **توليد أرقام مرجعية فريدة وآمنة (Booking Reference):**
-   - صيغة مشفرة يصعب تخمينها: `RHL-YYYY-NNNNN-XXXX` (تجمع بين السنة، رقم الحجز التسلسلي، ورمز عشوائي غير ملتبس لسهولة النطق عبر الهاتف).
-
-5. **شاشة إدارة كاملة للحجوزات في لوحة التحكم (Admin Dashboard):**
-   - مبنية وفق معايير ووردبريس القياسية (`WP_List_Table`).
-   - فلاتر حية لجميع الحالات (All, Pending, Confirmed, Completed, Cancelled, Rejected, Expired).
-   - إجراءات سريعة: تأكيد الحجز (`Confirm`)، تأكيد مع تسديد فوري (`Confirm & Pay`)، تسديد يدوي (`Mark as Paid`)، وإلغاء فوري يسترجع المقاعد (`Cancel`).
-   - **شاشة إضافة حجز يدوي مباشر (`Add New Booking`):** مخصصة لموظفي الشركة لاستقبال حجوزات العملاء عبر الهاتف أو شباك التذاكر في المقر.
-
-6. **نظام تنبيهات بريدية فورية (Automated Responsive HTML Emails):**
-   - **إيميل العميل (Booking Received):** يصل للعميل فوراً بملخص الحجز، الرقم المرجعي، وتعليمات الدفع ومهلة الحجز.
-   - **إيميل الأدمن (New Booking Alert):** ينبه إدارة الموقع مع بيانات العميل ورابط مباشر لإدارة الحجز من الداشبورد.
-
-7. **توافق كامل مع ألوان وهوية الموقع (Adaptive CSS):**
-   - الفورم والأزرار ترث خطوط وألوان الموقع تلقائياً عبر CSS Variables سواء كان الموقع مبنياً بـ Gutenberg أو Elementor أو أي قالب ووردبريس قياسي.
+* **Zero Overbooking Guarantee**: Prevents race conditions using dedicated database mutual exclusion locks via MySQL `GET_LOCK()`. Even under concurrent checkout attempts, seat availability remains strictly accurate.
+* **Content Agnostic**: Seamlessly binds to any existing custom post type and custom fields (Post Meta).
+* **Multi-Layered Security**: Built-in honeypot trap for spam prevention, IP-based rate limiting (maximum 5 attempts per hour), and strict double-click debouncing.
+* **Server-Authoritative Pricing**: Calculates subtotals, currencies, and guest pricing on the server side to eliminate client-side tampering.
+* **Obfuscated Booking References**: Generates human-friendly yet non-enumerable reference identifiers formatted as `RHL-YYYY-NNNNN-XXXX`.
+* **Administrative Controls**: Comprehensive booking management using WordPress native `WP_List_Table` standards, status workflows (Pending, Confirmed, Cancelled, Rejected, Expired, Completed), and manual booking creation for front-desk and phone operations.
+* **Automated Email Notifications**: Dispatches responsive HTML emails to customers (Booking Received with payment instructions and holding deadlines) and site administrators (New Booking Alerts with direct admin action links).
+* **Theme Adaptive Interface**: Frontend forms and modal windows automatically inherit typography and color variables from your active theme or page builder (Gutenberg, Elementor, Tailwind, etc.).
 
 ---
 
-## 🚀 الشورت كودز المتاحة (Shortcodes)
+## 2. Prerequisites: Preparing Your Tours and Custom Fields
 
-يمكنك وضع هذه الأكواد داخل المحتوى، أو عبر Gutenberg Shortcode Block، أو داخل Elementor:
+Before using the booking system, your WordPress site needs content to represent tours or trips.
 
-| الشورت كود | الوصف والاستخدام | مثال |
-| :--- | :--- | :--- |
-| `[rahl_booking_form]` | عرض فورم الحجز الكامل مدمجاً في الصفحة (إذا كان داخل صفحة رحلة يستنتجها تلقائياً، أو حدد الـ ID). | `[rahl_booking_form tour_id="123"]` |
-| `[rahl_booking_button]` | زر حجز أنيق يفتح فورم الرحلة كنافذة منبثقة (**Popup Modal**) فوق الصفحة (مثالي لكروت الرحلات). | `[rahl_booking_button tour_id="123" text="احجز الآن"]` |
-| `[rahl_available_seats]` | عرض عدد المقاعد المتبقية والمتاحة في الوقت الفعلي. | `[rahl_available_seats tour_id="123"]` |
-| `[rahl_total_seats]` | عرض إجمالي سعة مقاعد الرحلة. | `[rahl_total_seats tour_id="123"]` |
-| `[rahl_booked_seats]` | عرض إجمالي عدد المقاعد المحجوزة حالياً. | `[rahl_booked_seats tour_id="123"]` |
+### What is a Custom Post Type (CPT)?
+In WordPress, posts and pages are default post types. A Custom Post Type is a dedicated content structure tailored for specific data, such as `tours`, `trips`, or `packages`. You can register a CPT through your theme's `functions.php` or using free plugins like Custom Post Type UI (CPT UI).
 
----
+### Required Custom Fields (Post Meta)
+Rahal Booking reads tour properties directly from WordPress post metadata. You need three pieces of data associated with each tour:
 
-## 🛠️ التثبيت والإعداد (Installation & Setup)
+1. **Total Seats Field (Required)**: Numeric value representing capacity (e.g., `20`).
+2. **Price per Guest Field (Required)**: Numeric price per person (e.g., `250` or `250.00`).
+3. **Tour Date Field (Optional)**: Specific event date formatted as `YYYY-MM-DD` or `YYYYMMDD` (ACF format). If omitted, the tour is treated as an open-date or flexible package.
 
-1. **الرفع والتفعيل:**
-   - قم برفع مجلد `rahal` إلى مسار إضافات ووردبريس `/wp-content/plugins/`.
-   - أو ارفع ملف `rahal-0.1.0.zip` عبر لوحة تحكم ووردبريس: **الإضافات (Plugins)** ← **أضف جديد (Add New)** ← **رفع إضافة**.
-   - فعّل الإضافة.
-
-2. **ضبط الإعدادات:**
-   - اذهب إلى القائمة الجانبية: **Rahal Bookings** ← **Settings**.
-   - حدد اسم نوع المقال (Tour Post Type) وأسماء الحقول المخصصة (المقاعد، السعر، والتاريخ).
-   - حدد العملة والبريد الإلكتروني للتنبيهات.
-   - اكتب تعليمات الدفع للعميل (سواء الدفع في الفرع أو التحويل البنكي) والمهلة الزمنية لكل طريقة بالساعات.
+### How to Create These Custom Fields
+You can add these meta fields to your tour CPT using:
+* **Native WordPress Custom Fields**: Available directly under Screen Options in the classic post editor.
+* **Advanced Custom Fields (ACF / ACF Free)**: Create a Field Group assigned to your Tour CPT with fields named `total_seats`, `tour_price`, and `tour_date`.
+* **Meta Box / Pods / Custom Code**: Any tool storing standard values inside the `wp_postmeta` table.
 
 ---
 
-## 💻 متطلبات التشغيل (System Requirements)
-- **WordPress:** 6.0 أو أحدث.
-- **PHP:** 7.4 أو أحدث (متوافقة تماماً مع PHP 8.0 و 8.1 و 8.2).
-- **MySQL / MariaDB:** يدعم دالة `GET_LOCK`.
+## 3. Installation and Initial Configuration
+
+1. Copy or upload the `rahal` plugin folder into your WordPress installation directory under `/wp-content/plugins/`.
+2. Navigate to **Plugins** in your WordPress dashboard and click **Activate** under **Rahal Booking**.
+3. Open the plugin administration menu: **Rahal Bookings > Settings**.
+4. Configure your mapping parameters:
+   * **Tour Post Type**: Enter the slug of your custom post type (e.g., `tour` or `trip`).
+   * **Seats Meta Field**: Enter the custom field key storing total seats (e.g., `total_seats`).
+   * **Price Meta Field**: Enter the custom field key storing the price per person (e.g., `tour_price`).
+   * **Date Meta Field**: Enter the custom field key storing the tour date (e.g., `tour_date`).
+   * **Currency**: Select your business currency code (e.g., `USD`, `EUR`, `EGP`).
+   * **Payment Instructions**: Add instructions for manual payment methods (Pay at Branch and Bank Transfer) along with holding deadlines in hours.
+5. Save settings.
+
+---
+
+## 4. Shortcode Reference and Use Cases
+
+Rahal Booking provides five shortcodes. Attributes are optional when placed directly on a single tour page, as the plugin automatically detects the current post ID.
+
+### 1. `[rahl_booking_form]`
+Renders a complete, responsive booking form directly embedded in the page flow.
+
+* **Attributes**:
+  * `tour_id` (optional): Numeric ID of the tour. Defaults to the current page.
+* **Example**:
+  ```text
+  [rahl_booking_form]
+  [rahl_booking_form tour_id="85"]
+  ```
+* **Use Case**:
+  Ideal for dedicated single tour pages where visitors read full itineraries and descriptions, then complete their reservation at the bottom of the page or in a sticky sidebar.
+
+---
+
+### 2. `[rahl_booking_button]`
+Outputs an interactive button that triggers an elegant popup modal window containing the reservation form when clicked.
+
+* **Attributes**:
+  * `tour_id` (optional): Numeric ID of the tour.
+  * `text` (optional): Custom label displayed on the button. Default is "Book Now".
+  * `class` (optional): Additional CSS class for styling.
+* **Example**:
+  ```text
+  [rahl_booking_button tour_id="85" text="Reserve Your Spot"]
+  ```
+* **Use Case**:
+  * **Archive and Listing Cards**: Embed directly into archive loops, comparison tables, or Elementor card grids. Visitors can book any tour immediately without leaving the main catalog.
+  * **Compact Header Banners**: Place a lightweight call-to-action button in hero sections or promotional banners without cluttering the initial viewport with full form fields.
+  * When seats reach zero, the button automatically disables and reflects a "Fully Booked" label.
+
+---
+
+### 3. `[rahl_available_seats]`
+Displays the live count of remaining unreserved seats in real time.
+
+* **Attributes**:
+  * `tour_id` (optional): Numeric ID of the tour.
+  * `date` (optional): Specific date formatted as `YYYY-MM-DD`.
+* **Example**:
+  ```text
+  Only [rahl_available_seats tour_id="85"] seats left!
+  ```
+* **Use Case**:
+  Creates authentic urgency on landing pages and sales copy, reassuring customers about real-time availability and boosting conversion rates.
+
+---
+
+### 4. `[rahl_total_seats]`
+Outputs the maximum seat capacity of the specified tour.
+
+* **Attributes**:
+  * `tour_id` (optional): Numeric ID of the tour.
+* **Example**:
+  ```text
+  Capacity: [rahl_total_seats tour_id="85"] passengers
+  ```
+* **Use Case**:
+  Useful in tour specifications, info boxes, and comparison lists where travelers need to know group size limitations before booking.
+
+---
+
+### 5. `[rahl_booked_seats]`
+Outputs the current number of confirmed and active pending seats reserved for a tour.
+
+* **Attributes**:
+  * `tour_id` (optional): Numeric ID of the tour.
+  * `date` (optional): Specific date formatted as `YYYY-MM-DD`.
+* **Example**:
+  ```text
+  Joined so far: [rahl_booked_seats tour_id="85"] travelers
+  ```
+* **Use Case**:
+  Acts as social proof, showing prospective customers that other people have already joined the excursion.
+
+---
+
+## 5. Administrative Workflow
+
+1. **Viewing Orders**: Access **Rahal Bookings > All Bookings** to inspect customer data, booking references, dates, guest counts, and color-coded status badges.
+2. **Executing Actions**: Hover over any reference number to perform status updates:
+   * **Confirm**: Validates a pending booking and clears expiry timers.
+   * **Confirm & Pay**: Confirms the booking and sets payment status to Paid simultaneously (optimized for front-desk cash collections).
+   * **Cancel**: Revokes reservations and instantly returns held seats to the public availability pool.
+   * **Mark as Paid**: Updates manual transactions to Paid without modifying booking status.
+3. **Manual Front-Desk Bookings**: Access **Rahal Bookings > Add New** to record walk-in or telephone reservations. Staff can select published tours, enter customer details, choose initial states, and either proceed to create additional entries or jump straight to the booking list with row highlighting.
+
+---
+
+## 6. Technical Specifications
+
+* **Minimum PHP Version**: 7.4 (Tested up to PHP 8.2).
+* **Minimum WordPress Version**: 6.0 (Tested up to WordPress 6.7).
+* **Database Tables**: Dedicated custom table `{prefix}rahl_bookings`.
+* **Uninstall Cleanliness**: If configured in settings, database tables and stored options can be purged cleanly upon uninstallation via `uninstall.php`.
+* **Internationalization**: Fully localized with gettext functions ready for translation into any language.
