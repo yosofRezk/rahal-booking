@@ -20,12 +20,22 @@ Rahal Booking is an independent booking engine plugin. It attaches a complete bo
 * Reads seats, price, and date from any custom field
 * Real-time seat availability calculation
 * Double-booking prevention with MySQL locks
-* Reference number generation (RHL-2026-00001)
+* Reference number generation (RHL-2026-00001-XXXX)
 * Honeypot spam protection
 * Rate limiting (5 attempts/hour per IP)
 * Admin booking list with Confirm / Reject / Cancel / Mark as Paid
+* Admin manual booking creation ("Add New Booking")
+* Popup modal booking button `[rahl_booking_button]`
 * Email notifications for customer and admin
 * Manual payment methods (Branch / Transfer)
+
+**Shortcodes**
+
+* `[rahl_booking_form]` — Inline booking form for tour pages.
+* `[rahl_booking_button]` — Modal popup booking button for cards and listings.
+* `[rahl_available_seats]` — Displays remaining available seats.
+* `[rahl_total_seats]` — Displays total tour seats.
+* `[rahl_booked_seats]` — Displays booked seats count.
 
 **Upcoming Features**
 
@@ -39,7 +49,7 @@ Rahal Booking is an independent booking engine plugin. It attaches a complete bo
 1. Upload the plugin files to `/wp-content/plugins/rahal/`.
 2. Activate through the **Plugins** screen.
 3. Go to **Rahal Bookings > Settings** and configure your tour post type and field names.
-4. Add `[tbs_booking_form]` shortcode to your tour page template.
+4. Add `[rahl_booking_form]` or `[rahl_booking_button]` to your tour pages or templates.
 
 == Frequently Asked Questions ==
 

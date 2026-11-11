@@ -54,12 +54,22 @@ class RAHL_Plugin {
         require_once RAHL_PATH . 'includes/class-tour.php';
         require_once RAHL_PATH . 'includes/class-booking-repository.php';
         require_once RAHL_PATH . 'includes/class-availability.php';
+        require_once RAHL_PATH . 'includes/class-pricing.php';
+        require_once RAHL_PATH . 'includes/class-booking-manager.php';
+        require_once RAHL_PATH . 'includes/class-emails.php';
+        require_once RAHL_PATH . 'frontend/class-booking-form.php';
+        require_once RAHL_PATH . 'frontend/class-form-handler.php';
         require_once RAHL_PATH . 'frontend/class-shortcodes.php';
 
         add_action( 'init', array( 'RAHL_Shortcodes', 'init' ) );
+        RAHL_Form_Handler::init();
+        RAHL_Emails::init();
 
         // تحميل مكونات الأدمن
         if ( is_admin() ) {
+            require_once RAHL_PATH . 'admin/class-bookings-list-table.php';
+            require_once RAHL_PATH . 'admin/class-admin-bookings.php';
+            require_once RAHL_PATH . 'admin/class-admin-add-booking.php';
             require_once RAHL_PATH . 'admin/class-admin-menu.php';
             require_once RAHL_PATH . 'admin/class-settings-page.php';
 

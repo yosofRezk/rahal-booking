@@ -16,6 +16,28 @@ class RAHL_Shortcodes {
         add_shortcode( 'rahl_available_seats', array( __CLASS__, 'available_seats' ) );
         add_shortcode( 'rahl_total_seats', array( __CLASS__, 'total_seats' ) );
         add_shortcode( 'rahl_booked_seats', array( __CLASS__, 'booked_seats' ) );
+        add_shortcode( 'rahl_booking_form', array( __CLASS__, 'booking_form' ) );
+        add_shortcode( 'rahl_booking_button', array( __CLASS__, 'booking_button' ) );
+    }
+
+    /**
+     * [rahl_booking_button tour_id="" text="Book Now"]
+     *
+     * @param array $atts Attributes.
+     * @return string
+     */
+    public static function booking_button( $atts ) {
+        return RAHL_Booking_Form::render_button( $atts );
+    }
+
+    /**
+     * [rahl_booking_form tour_id=""]
+     *
+     * @param array $atts Attributes.
+     * @return string
+     */
+    public static function booking_form( $atts ) {
+        return RAHL_Booking_Form::render( $atts );
     }
 
     /**

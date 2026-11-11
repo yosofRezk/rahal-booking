@@ -80,6 +80,13 @@ function rahl_get_booking( $booking_id ) {
  * @return int|WP_Error معرّف الحجز أو كائن خطأ.
  */
 function rahl_create_booking( $tour_id, $date, $guests, $customer ) {
-    // Step 7: return RAHL_Booking_Manager::create( ... );
-    return new WP_Error( 'not_implemented', __( 'Not implemented yet.', 'rahal' ) );
+    $args = array_merge(
+        is_array( $customer ) ? $customer : array(),
+        array(
+            'tour_id' => $tour_id,
+            'guests'  => $guests,
+        )
+    );
+
+    return RAHL_Booking_Manager::create( $args );
 }

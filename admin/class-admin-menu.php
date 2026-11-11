@@ -14,6 +14,7 @@ class RAHL_Admin_Menu {
      */
     public static function init() {
         add_action( 'admin_menu', array( __CLASS__, 'register_menus' ) );
+        add_action( 'admin_init', array( 'RAHL_Admin_Add_Booking', 'handle_submission' ) );
     }
 
     /**
@@ -41,6 +42,16 @@ class RAHL_Admin_Menu {
             array( __CLASS__, 'render_bookings_page' )
         );
 
+        // صفحة Add New Booking (إنشاء حجز يدوي للأدمن وموظف الفرع)
+        add_submenu_page(
+            'rahl-bookings',
+            __( 'Add New Booking', 'rahal' ),
+            __( 'Add New', 'rahal' ),
+            'rahl_manage_bookings',
+            'rahl-add-booking',
+            array( 'RAHL_Admin_Add_Booking', 'render' )
+        );
+
         // صفحة Settings — تحتاج manage_options (أعلى من rahl_manage_bookings)
         add_submenu_page(
             'rahl-bookings',
@@ -53,13 +64,9 @@ class RAHL_Admin_Menu {
     }
 
     /**
-     * صفحة All Bookings المؤقتة — هتتبني في Step 9.
+     * صفحة All Bookings.
      */
     public static function render_bookings_page() {
-        if ( ! current_user_can( 'rahl_manage_bookings' ) ) {
-            wp_die( esc_html__( 'You do not have permission to access this page.', 'rahal' ) );
-        }
-        echo '<div class="wrap"><h1>' . esc_html__( 'All Bookings', 'rahal' ) . '</h1>';
-        echo '<p>' . esc_html__( 'Booking list will be built in Step 9.', 'rahal' ) . '</p></div>';
+        RAHL_Admin_Bookings::render();
     }
 }

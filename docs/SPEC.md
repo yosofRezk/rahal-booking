@@ -199,7 +199,9 @@ WHERE tour_id = 892
 function tbs_create_booking( $tour_id, $tour_date, $guests, $data ) {
     global $wpdb;
 
-    $lock_name = 'tbs_' . $tour_id . '_' . $tour_date; // أقل من 64 حرف
+    // استخدام md5 لضمان عدم تجاوز 64 حرفاً ولتفادي التصادم عبر قواعد بيانات مختلفة على نفس سيرفر MySQL
+    $db_name   = defined( 'DB_NAME' ) ? DB_NAME : '';
+    $lock_name = 'rahl_' . md5( $db_name . $wpdb->prefix . $tour_id . '|' . ( $tour_date ? $tour_date : 'null' ) );
     $got_lock  = $wpdb->get_var(
         $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', $lock_name )
     );
@@ -317,7 +319,9 @@ pending ──► confirmed ──► completed   (بعد تاريخ الرحل�
 ```php
 $wpdb->insert( $table, $row );              // reference فاضي مؤقتًا
 $id        = $wpdb->insert_id;              // مثلًا 17
-$reference = sprintf( 'TB-%s-%05d', gmdate( 'Y' ), $id );  // TB-2026-00017
+// RHL-2026-00017-7X9K (مع إضافة 4 أحرف وأرقام عشوائية غير ملتبسة لتصعيب التخمين)
+$suffix    = rahl_generate_suffix( 4 );
+$reference = sprintf( 'RHL-%s-%05d-%s', gmdate( 'Y' ), $id, $suffix );
 $wpdb->update( $table, array( 'reference' => $reference ), array( 'id' => $id ) );
 ```
 
@@ -611,6 +615,7 @@ interface TBS_Gateway {
 ```text
 Travel Bookings
 ├── All Bookings      (جدول بكل الحجوزات + فلاتر وبحث)
+├── Add New Booking   (إنشاء حجز يدوي مباشر للأدمن وموظف الفرع/الهاتف)
 └── Settings          (الربط والمهل والإيميلات والدفع)
 ```
 
@@ -637,6 +642,7 @@ Travel Bookings
 | Cancel | pending أو confirmed ← cancelled | المقاعد ترجع متاحة تلقائيًا |
 | Complete | confirmed ← completed | بعد تاريخ الرحلة فقط (قسم 5) |
 | Mark as Paid | payment\_status ← paid | للدفع اليدوي |
+| Add Booking | إنشاء حجز يدوي مباشر من الداشبورد | للعملاء عبر الهاتف أو شباك التذاكر، مع خيار تحديد الحالة الأولية ومقاعد الرحلة |
 
 **مثال Pay at Branch:** العميل وصل الفرع وقال TB-2026-00022. الموظف يكتب الرقم في البحث، يفتح الحجز، ويدوس Confirm مع Mark as Paid. الحالتين يتغيروا مرة واحدة، والعميل يستلم إيميل تأكيد.
 
@@ -685,6 +691,7 @@ Travel Bookings
 | الشورت كود | بيعرض إيه | النسخة |
 | --- | --- | --- |
 | `[tbs_booking_form]` | فورم الحجز | v0.1 |
+| `[rahl_booking_button]` | زر حجز يفتح فورم الرحلة كنافذة منبثقة (Popup Modal) | v0.1 |
 | `[tbs_available_seats]` | عدد المقاعد المتاحة | v0.1 |
 | `[tbs_total_seats]` | إجمالي المقاعد | v0.1 |
 | `[tbs_booked_seats]` | المقاعد المحجوزة | v0.1 |
