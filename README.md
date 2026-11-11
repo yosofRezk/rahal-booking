@@ -52,8 +52,9 @@ You can add these meta fields to your tour CPT using:
    * **Price Meta Field**: Enter the custom field key storing the price per person (e.g., `tour_price`).
    * **Date Meta Field**: Enter the custom field key storing the tour date (e.g., `tour_date`).
    * **Currency**: Select your business currency code (e.g., `USD`, `EUR`, `EGP`).
+   * **Admin Notification Email**: Enter the specific inbox email address where administrators should receive new booking alerts (defaults to the WordPress administration email if left blank).
    * **Payment Instructions**: Add instructions for manual payment methods (Pay at Branch and Bank Transfer) along with holding deadlines in hours.
-5. Save settings.
+5. Save settings. The built-in **Connection Check** card will immediately verify whether your field keys match published tours.
 
 ---
 
@@ -138,7 +139,61 @@ Outputs the current number of confirmed and active pending seats reserved for a 
 
 ---
 
-## 5. Administrative Workflow
+## 5. Email Notification System and Setup
+
+Rahal Booking features a fully automated dual-notification system triggered immediately upon the submission of every booking.
+
+### How Admin Notifications Work
+Whenever a customer books a tour (or an administrator creates a manual booking), an instant email alert is dispatched to the store administrator or reservations team.
+
+* **Configuring the Recipient Address**:
+  1. Navigate to **Rahal Bookings > Settings**.
+  2. Under the **Booking Rules** section, locate the **Admin Notification Email** field.
+  3. Enter the specific email address where reservation alerts should be delivered (for example, `bookings@yourcompany.com`).
+  4. If this field is left empty, Rahal Booking automatically falls back to your WordPress general administration email address configured under **Settings > General > Administration Email Address**.
+* **What the Admin Notification Includes**:
+  * Booking reference code (e.g., `RHL-2026-00001-A7K2`).
+  * Customer name, phone number, and email address.
+  * Tour title, selected travel date, and number of guests.
+  * Total price calculated by the server and chosen payment method.
+  * Direct action link that opens the exact booking inside the WordPress admin dashboard for instant review and status updates.
+
+### How Customer Confirmations Work
+Customers receive an immediate HTML confirmation email sent directly to the email address they entered into the booking form (`customer_email`).
+
+* **Customer Email Contents**:
+  * Professional greeting with full reservation summary.
+  * Unique booking reference number to use during communications.
+  * Clear payment instructions tailored to their selected payment method:
+    * **Bank Transfer**: Displays your bank account name, IBAN/account number, and bank details as defined in your settings.
+    * **Pay at Branch**: Displays your physical office address and business hours.
+  * Holding period deadline notice (e.g., "Your seats are held for 48 hours. Please complete payment before the expiration deadline to ensure your reservation is confirmed").
+
+### Ensuring Reliable Email Deliverability (SMTP Setup)
+By default, WordPress attempts to send emails using PHP `mail()` via the server hosting your website. On most shared hosts and VPS configurations, PHP `mail()` either fails, gets blocked by spam firewalls, or arrives directly into the recipient's Junk folder.
+
+To guarantee that both you and your travelers receive emails reliably:
+1. Install an SMTP plugin such as **WP Mail SMTP**, **FluentSMTP**, or **Post SMTP**.
+2. Configure the plugin to connect with a reputable transactional email service or mail provider:
+   * Google Workspace / Gmail
+   * Microsoft 365
+   * SendGrid
+   * Brevo (formerly Sendinblue)
+   * Mailgun
+   * Amazon SES
+   * Authenticated SMTP from your hosting provider
+3. Send a test email from the SMTP plugin settings to verify proper SPF, DKIM, and DMARC alignment.
+
+### Developer Hooks and Extensibility
+Developers can customize email subjects and headers using standard WordPress filter hooks:
+* `rahl_email_customer_subject`: Filter customer confirmation subject line.
+* `rahl_email_customer_headers`: Filter customer email headers (e.g., adding custom Reply-To or BCC).
+* `rahl_email_admin_subject`: Filter administrator notification subject line.
+* `rahl_email_admin_headers`: Filter administrator email headers.
+
+---
+
+## 6. Administrative Workflow
 
 1. **Viewing Orders**: Access **Rahal Bookings > All Bookings** to inspect customer data, booking references, dates, guest counts, and color-coded status badges.
 2. **Executing Actions**: Hover over any reference number to perform status updates:
@@ -150,7 +205,7 @@ Outputs the current number of confirmed and active pending seats reserved for a 
 
 ---
 
-## 6. Technical Specifications
+## 7. Technical Specifications
 
 * **Minimum PHP Version**: 7.4 (Tested up to PHP 8.2).
 * **Minimum WordPress Version**: 6.0 (Tested up to WordPress 6.7).
